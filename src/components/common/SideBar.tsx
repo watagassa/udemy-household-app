@@ -9,11 +9,12 @@ import {
   ListItemText,
   Toolbar,
 } from "@mui/material";
-import React, { FC } from "react";
+import React, { CSSProperties, FC } from "react";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import HomeIcon from "@mui/icons-material/Home";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
+import { NavLink } from "react-router-dom";
 interface SideberProps {
   drawerWidth: number;
   mobileOpen: boolean;
@@ -41,24 +42,47 @@ const SideBar = ({
     { text: "Home", path: "/", icon: HomeIcon },
     { text: "Report", path: "/report", icon: EqualizerIcon },
   ];
+  const baseLinkStyle: CSSProperties = {
+    textDecoration: "none",
+    color: "inherit",
+    display: "block",
+  };
+  const activeLinkStyle: CSSProperties = {
+    color: "rgba(0,0,0,0.98)",
+  };
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
       <List>
         {MunuItems.map((item, index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                <item.icon />
-              </ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          </ListItem>
+          <NavLink
+            key={index}
+            to={item.path}
+            style={({ isActive }) => {
+              console.log("選択されたメニューは", item.text, isActive);
+              return {
+                //...baseLinkStyle,
+                //これと同じ スプレッド構文
+                //textDecoration:"none",
+                //color: "inherit",
+                //display: "block",
+                ...(isActive ?  activeLinkStyle: {})
+              };
+            }}
+          >
+            <ListItem key={index} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                  <item.icon />
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItemButton>
+            </ListItem>
+          </NavLink>
         ))}
       </List>
-
     </div>
   );
   return (
