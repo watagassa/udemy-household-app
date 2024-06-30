@@ -1,12 +1,29 @@
-import { Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Toolbar,
+} from "@mui/material";
 import React, { FC } from "react";
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-
-interface SideberProps{
-    drawerWidth: number ,
-    mobileOpen:boolean,
-    handleDrawerToggle: () => void,
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import MailIcon from "@mui/icons-material/Mail";
+import HomeIcon from "@mui/icons-material/Home";
+import EqualizerIcon from "@mui/icons-material/Equalizer";
+interface SideberProps {
+  drawerWidth: number;
+  mobileOpen: boolean;
+  handleDrawerToggle: () => void;
+}
+interface menuItem {
+  text: string;
+  path: string;
+  // React.ComponentType MUIのIconがreactのコンポーネント型
+  icon: React.ComponentType;
 }
 // type SideberProps = {
 //     drawerWidth: number ,
@@ -15,38 +32,35 @@ interface SideberProps{
 // }
 // //ファンクション型で引数はSideberPropsインターフェースで
 // const SideBar:FC<SideberProps> = ({ drawerWidth,mobileOpen,handleDrawerToggle }: SideberProps ) => {
-    const SideBar = ({ drawerWidth,mobileOpen,handleDrawerToggle }: SideberProps ) => {
-    const drawer = (
-        <div>
-          <Toolbar />
-          <Divider />
-          <List>
-            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {["All mail", "Trash", "Spam"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </div>
-      );
+const SideBar = ({
+  drawerWidth,
+  mobileOpen,
+  handleDrawerToggle,
+}: SideberProps) => {
+  const MunuItems: menuItem[] = [
+    { text: "Home", path: "/", icon: HomeIcon },
+    { text: "Report", path: "/report", icon: EqualizerIcon },
+  ];
+  const drawer = (
+    <div>
+      <Toolbar />
+      <Divider />
+      <List>
+        {MunuItems.map((item, index) => (
+          <ListItem key={index} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                <item.icon />
+              </ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+
+    </div>
+  );
   return (
     <Box
       component="nav"
@@ -57,7 +71,7 @@ interface SideberProps{
       <Drawer
         variant="temporary"
         open={mobileOpen}
-       // onTransitionEnd={handleDrawerTransitionEnd}
+        // onTransitionEnd={handleDrawerTransitionEnd}
         onClose={handleDrawerToggle}
         ModalProps={{
           keepMounted: true, // Better open performance on mobile.
