@@ -67,7 +67,7 @@ const SideBar = ({
                 //textDecoration:"none",
                 //color: "inherit",
                 //display: "block",
-                ...(isActive ?  activeLinkStyle: {})
+                ...(isActive ? activeLinkStyle : {}),
               };
             }}
           >
