@@ -27,7 +27,7 @@ export default function AppLayout() {
   const handleDrawerClose = () => {
     setIsClosing(true);
     setMobileOpen(false);
-  };
+  };///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const handleDrawerTransitionEnd = () => {
     setIsClosing(false);
@@ -83,8 +83,8 @@ export default function AppLayout() {
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
         }}
       >
         <Toolbar>
@@ -93,7 +93,7 @@ export default function AppLayout() {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuIcon />
           </IconButton>
