@@ -1,6 +1,7 @@
 import { Card, CardContent, Grid, Stack, Typography } from "@mui/material";
 import React from "react";
 import IconButton from "@mui/material/IconButton";
+import { theme } from '../theme/theme';
 import {
   AccountBalance,
   ArrowDownward,
@@ -12,7 +13,7 @@ const MonthlySummary = () => {
     <Grid container spacing={{ xs: 1, sm: 2 }} mb={2}>
       {/* 収入 */}
       <Grid item xs={4} display={"flex"} flexDirection={"column"}>
-        <Card sx={{ bgcolor: "blue", color: "white", borderRadius: "10px" ,flexGrow: 1,}}>
+        <Card sx={{ bgcolor: (theme) => theme.palette.incomeColor.main, color: "white", borderRadius: "10px" ,flexGrow: 1,}}>
           <CardContent sx={{ padding: { xs: 1, sm: 2 } }}>
             <Stack direction={"row"}>
               <ArrowUpward></ArrowUpward>
@@ -34,7 +35,7 @@ const MonthlySummary = () => {
       </Grid>
       {/* 支出 */}
       <Grid item xs={4} display={"flex"}>
-        <Card sx={{ bgcolor: "red", color: "white", borderRadius: "10px", flexGrow: 1,}}>
+        <Card sx={{ bgcolor:  (theme) => theme.palette.expeneColor.main, color: "white", borderRadius: "10px", flexGrow: 1,}}>
           <CardContent sx={{ padding: { xs: 1, sm: 2 } }}>
             <Stack direction={"row"}>
               <ArrowDownward></ArrowDownward>
@@ -56,7 +57,7 @@ const MonthlySummary = () => {
       </Grid>
       {/* 残高 */}
       <Grid item xs={4} display={"flex"}>
-        <Card sx={{ bgcolor: "green", color: "white", borderRadius: "10px", flexGrow: 1,}}>
+        <Card sx={{ bgcolor: (theme) => theme.palette.balanceColor.main, color: "white", borderRadius: "10px", flexGrow: 1,}}>
           <CardContent sx={{ padding: { xs: 1, sm: 2 } }}>
             <Stack direction={"row"}>
               <AccountBalance></AccountBalance>
