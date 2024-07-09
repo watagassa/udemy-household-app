@@ -1,6 +1,7 @@
 //Transaction ＝　商売
 //income 収入 expense 費用
 //型エイリアス type interfaceと違い、Mapped Typesが使える
+// Mapped Types
 export type TransactionType = "income" | "expense";
 export type IncomeCategory = "収入" | "副収入" | "お小遣い";
 export type ExpenseCategory =
