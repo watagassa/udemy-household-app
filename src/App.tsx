@@ -11,7 +11,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { Transaction } from "./types/index";
 import { collection, getDocs} from "firebase/firestore";
 import { db } from "./firebase";
+import { error } from "console";
 function App() {
+  //型ガードはbooleanを返す
+  //TSの型ガードを使用　型によって処理を変える  　errが{code:string,message:string} の型だったときに「true」を返す
+  function isFireStoreError(err: unknown):err is {code:string,message:string} {
+    return typeof err === "object" && err !== null && "code" in err;
+  }
   //firebaseのデータを保持するためのuseState typesの中のTransaction型を使用
   //取引の記録を保存する
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -39,7 +45,20 @@ function App() {
         });
         console.log(transactionsData);
         setTransactions(transactionsData);
-      } catch (err) {}
+        //errがfirebaseのものか普通のものかを判断したい
+      } catch (err) {
+        //errにcodeとmessageがある場合はfirebaseのerr
+        //
+        if(isFireStoreError(err)){
+          // json形式　json形式のもの , 細かいルールを関数で指定, インデントで字を２スペース開ける
+          console.error(JSON.stringify(err,null,2));
+          console.error("firebaseのエラー",err);
+          // console.error("エラーメッセージ",err.message);
+          // console.error("エラーコード"+err.code);
+        } else {
+          console.error("一般的なエラー",err);
+        }
+      }
     }
     fecheTransaction();
   }, []);
