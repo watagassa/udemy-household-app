@@ -51,8 +51,8 @@ function App() {
         //
         if(isFireStoreError(err)){
           // json形式　json形式のもの , 細かいルールを関数で指定, インデントで字を２スペース開ける
-          console.error(JSON.stringify(err,null,2));
-          console.error("firebaseのエラー",err);
+          //console.error(JSON.stringify(err,null,2));
+          console.error("firestoreのエラー",err);
           // console.error("エラーメッセージ",err.message);
           // console.error("エラーコード"+err.code);
         } else {
