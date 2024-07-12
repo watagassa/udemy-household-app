@@ -12,6 +12,8 @@ import { Transaction } from "./types/index";
 import { collection, getDocs} from "firebase/firestore";
 import { db } from "./firebase";
 import { error } from "console";
+import { format } from "date-fns";
+import { formatMonth } from "./utils/formatting";
 function App() {
   //型ガードはbooleanを返す
   //TSの型ガードを使用　型によって処理を変える  　errが{code:string,message:string} の型だったときに「true」を返す
@@ -21,9 +23,13 @@ function App() {
   //firebaseのデータを保持するためのuseState typesの中のTransaction型を使用
   //取引の記録を保存する
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  //useState<Date>がなくとも、TSの型推論でエラーが出ていない
+  const [currentMonth,setCurrentMonth] = useState(new Date());
+  //date-fnsのformat Year Month Dayの順で書く
+  //format(currentMonth,"yyyy-MM");
   //初回レンダリング時のみ（最後の引数の[]が空）
-  //async functionは呼び出されるとPromiseを返す。
-
+  //async functionは呼び出されるとPromiseを返す。　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
+  //console.log(transactions);
   useEffect(() => {
     //useEffectにasyncがつけられないために作った関数
     const fecheTransaction = async() => {
@@ -63,13 +69,19 @@ function App() {
     fecheTransaction();
   }, []);
 
+  const monthlyTransactions = transactions.filter((transaction) => {
+    // transactionには取引データが入っている
+    //　startsWith() は.の前の文字列が引数で始まっているかどうかでtrue falseを返す
+    return transaction.date.startsWith(formatMonth(currentMonth));
+  });
+  console.log(monthlyTransactions);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Routes>
           <Route path="/" element={<AppLayout />}>
-            <Route index element={<Home />} />
+            <Route index element={<Home monthlyTransactions = {monthlyTransactions}/>} />
             <Route path="/report" element={<Report />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
