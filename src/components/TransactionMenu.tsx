@@ -24,10 +24,12 @@ import IconComponents from "./common/IconComponents";
 interface TransactionMenuProps {
   dailyTransactions: Transaction[];
   currentDay: string;
+  onAddTransacitonForm: () => void;
 }
 const TransactionMenu = ({
   dailyTransactions,
   currentDay,
+  onAddTransacitonForm,
 }: TransactionMenuProps) => {
   const menuDrawerWidth = 320;
 
@@ -50,7 +52,7 @@ const TransactionMenu = ({
         <Typography fontWeight={"fontWeightBold"}>
           日時：{currentDay}
         </Typography>
-        <DailySummary dailyTransactions={dailyTransactions}/>
+        <DailySummary dailyTransactions={dailyTransactions} />
         {/* 内訳タイトル&内訳追加ボタン */}
         <Box
           sx={{
@@ -66,7 +68,7 @@ const TransactionMenu = ({
             <Typography variant="body1">内訳</Typography>
           </Box>
           {/* 右側の追加ボタン */}
-          <Button startIcon={<AddCircleIcon />} color="primary">
+          <Button startIcon={<AddCircleIcon />} color="primary" onClick={onAddTransacitonForm}>
             内訳を追加
           </Button>
         </Box>
@@ -78,7 +80,10 @@ const TransactionMenu = ({
                   <Card
                     sx={{
                       width: "100%",
-                      backgroundColor: transaction.type === "income" ? (theme) => theme.palette.incomeColor.light : (theme) => theme.palette.expenseColor.light
+                      backgroundColor:
+                        transaction.type === "income"
+                          ? (theme) => theme.palette.incomeColor.light
+                          : (theme) => theme.palette.expenseColor.light,
                     }}
                   >
                     <CardActionArea>
