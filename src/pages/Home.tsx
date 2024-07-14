@@ -15,18 +15,18 @@ interface HomeProps {
 const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
   const today = format(new Date(), "yyyy-MM-dd");
   const [currentDay, setCurrentDay] = useState(today);
-  const [isEntryDrawerOpen,setIsEntryDrawerOpen] = useState(false);
+  const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
   const dailyTransactions = monthlyTransactions.filter((transaction) => {
     return transaction.date === currentDay;
   });
   //console.log(dailyTransactions);
-  const closeForm = () =>{
+  const closeForm = () => {
     setIsEntryDrawerOpen(!isEntryDrawerOpen);
-  }
+  };
   //フォームの開閉処理
   const handleAddTransactionForm = () => {
     setIsEntryDrawerOpen(!isEntryDrawerOpen);
-  }
+  };
   return (
     <Box sx={{ display: "flex" }}>
       {/* 左側コンテンツ */}
@@ -37,7 +37,7 @@ const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
           setCurrentMonth={setCurrentMonth}
           setCurrentDay={setCurrentDay}
           currentDay={currentDay}
-          today = {today}
+          today={today}
         />
       </Box>
       {/* 右側コンテンツ */}
@@ -45,9 +45,13 @@ const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
         <TransactionMenu
           dailyTransactions={dailyTransactions}
           currentDay={currentDay}
-          onAddTransacitonForm = {handleAddTransactionForm}
+          onAddTransacitonForm={handleAddTransactionForm}
         />
-        <TransactionForm onCloseForm={closeForm} isEntryDrawerOpen = {isEntryDrawerOpen}/>
+        <TransactionForm
+          onCloseForm={closeForm}
+          isEntryDrawerOpen={isEntryDrawerOpen}
+          currentDay={currentDay}
+        />
       </Box>
     </Box>
   );
