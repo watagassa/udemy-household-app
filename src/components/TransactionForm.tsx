@@ -9,19 +9,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
 import { Controller, useForm } from "react-hook-form";
 import { ExpenseCategory, IncomeCategory } from "../types";
-import AlarmIcon from '@mui/icons-material/Alarm';
-import AddHomeIcon from '@mui/icons-material/AddHome';
-import Diversity3Icon from '@mui/icons-material/Diversity3';
-import SportsTennisIcon from '@mui/icons-material/SportsTennis';
-import TrainIcon from '@mui/icons-material/Train';
-import WorkIcon from '@mui/icons-material/Work';
-import AddBusinessIcon from '@mui/icons-material/AddBusiness';
-import SavingsIcon from '@mui/icons-material/Savings';
+import AlarmIcon from "@mui/icons-material/Alarm";
+import AddHomeIcon from "@mui/icons-material/AddHome";
+import Diversity3Icon from "@mui/icons-material/Diversity3";
+import SportsTennisIcon from "@mui/icons-material/SportsTennis";
+import TrainIcon from "@mui/icons-material/Train";
+import WorkIcon from "@mui/icons-material/Work";
+import AddBusinessIcon from "@mui/icons-material/AddBusiness";
+import SavingsIcon from "@mui/icons-material/Savings";
 interface TransactionFormProps {
   //戻り値voidの関数
   onCloseForm: () => void;
@@ -41,21 +41,22 @@ const TransactionForm = ({
   const formWidth = 320;
   //controlをJSX内で使えるようにする処理 初期値も決めている
   //react-hook-formで使うものを入れている
-    // 支出用カテゴリ
-    const expenseCategories: CategoryItem[] = [
-      { label: "食費", icon: <FastfoodIcon fontSize="small" /> },
-      { label: "日用品", icon: <AlarmIcon fontSize="small" /> },
-      { label: "住居費", icon: <AddHomeIcon fontSize="small" /> },
-      { label: "交際費", icon: <Diversity3Icon fontSize="small" /> },
-      { label: "娯楽", icon: <SportsTennisIcon fontSize="small" /> },
-      { label: "交通費", icon: <TrainIcon fontSize="small" /> },
-    ];
-      // 収入用カテゴリ
+  // 支出用カテゴリ
+  const expenseCategories: CategoryItem[] = [
+    { label: "食費", icon: <FastfoodIcon fontSize="small" /> },
+    { label: "日用品", icon: <AlarmIcon fontSize="small" /> },
+    { label: "住居費", icon: <AddHomeIcon fontSize="small" /> },
+    { label: "交際費", icon: <Diversity3Icon fontSize="small" /> },
+    { label: "娯楽", icon: <SportsTennisIcon fontSize="small" /> },
+    { label: "交通費", icon: <TrainIcon fontSize="small" /> },
+  ];
+  // 収入用カテゴリ
   const incomeCategories: CategoryItem[] = [
     { label: "給与", icon: <WorkIcon fontSize="small" /> },
     { label: "副収入", icon: <AddBusinessIcon fontSize="small" /> },
     { label: "お小遣い", icon: <SavingsIcon fontSize="small" /> },
   ];
+  const [categories, setCategories] = useState(expenseCategories);
   const { control, setValue, watch } = useForm({
     defaultValues: {
       type: "expense",
@@ -76,8 +77,14 @@ const TransactionForm = ({
   //dateをcurrentDayにする
   //useEffectを使ってリアルタイムでdateを変更する
   useEffect(() => {
-    setValue("date",currentDay)
+    setValue("date", currentDay);
   }, [currentDay]);
+  //収支タイプに応じたカテゴリを取得
+  useEffect(() => {
+    const newCategories =
+      currentType === "expense" ? expenseCategories : incomeCategories;
+    setCategories(newCategories);
+  }, [currentType]);
   //収支を入力するところ
   return (
     <Box
@@ -168,16 +175,18 @@ const TransactionForm = ({
             name="category"
             control={control}
             render={({ field }) => {
-              return(
-              <TextField {...field} id="カテゴリ" label="カテゴリ" select>
-                <MenuItem value={"食費"}>
-                  <ListItemIcon>
-                    <FastfoodIcon />
-                  </ListItemIcon>
-                  食費
-                </MenuItem>
-              </TextField>
-            )}}
+              return (
+                <TextField {...field} id="カテゴリ" label="カテゴリ" select>
+                  {categories.map((category) => (
+                    //カテゴリごとに
+                    <MenuItem value={category.label}>
+                      <ListItemIcon>{category.icon}</ListItemIcon>
+                      {category.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              );
+            }}
           />
 
           {/* 金額 */}
