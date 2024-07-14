@@ -22,7 +22,7 @@ import TrainIcon from "@mui/icons-material/Train";
 import WorkIcon from "@mui/icons-material/Work";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import SavingsIcon from "@mui/icons-material/Savings";
-import {zodResolver} from "@hookform/resolvers/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { transactionSchema } from "../validations/schema";
 interface TransactionFormProps {
   //戻り値voidの関数
@@ -59,7 +59,13 @@ const TransactionForm = ({
     { label: "お小遣い", icon: <SavingsIcon fontSize="small" /> },
   ];
   const [categories, setCategories] = useState(expenseCategories);
-  const { control, setValue, watch, formState:{errors},handleSubmit} = useForm({
+  const {
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -68,7 +74,7 @@ const TransactionForm = ({
       content: "",
     },
     //zodのバリテーションチェックをreact-hooks-formと連携
-    resolver : zodResolver(transactionSchema),
+    resolver: zodResolver(transactionSchema),
   });
   const incomeExpenseToggle = (type: IncomeExpense) => {
     //{ control ,setValue}で作ったsetValueを使う
@@ -91,10 +97,9 @@ const TransactionForm = ({
     setCategories(newCategories);
   }, [currentType]);
   //収支を入力するところ
-  const onsubmit = (data:any) => {
+  const onsubmit = (data: any) => {
     console.log(data);
-
-  }
+  };
   return (
     <Box
       sx={{
@@ -176,6 +181,13 @@ const TransactionForm = ({
                 InputLabelProps={{
                   shrink: true,
                 }}
+                //エラーの中にdateプロパティが存在するならtrue
+                //errors.dateのみではboolean型でなく、dateの値が入る
+                //!!で反転させずにboolean型に変換
+                error={!!errors.date}
+                //?はmessageがなかったらやらなくていいよってやつ
+                //errors.dateはきちんとした値が入っていたら存在しない
+                helperText={errors.date?.message}
               />
             )}
           />
@@ -186,10 +198,17 @@ const TransactionForm = ({
             control={control}
             render={({ field }) => {
               return (
-                <TextField {...field} id="カテゴリ" label="カテゴリ" select>
-                  {categories.map((category) => (
+                <TextField
+                  {...field}
+                  error={!!errors.category}
+                  helperText={errors.category?.message}
+                  id="カテゴリ"
+                  label="カテゴリ"
+                  select
+                >
+                  {categories.map((category,index) => (
                     //カテゴリごとに
-                    <MenuItem value={category.label}>
+                    <MenuItem value={category.label} key={index}>
                       <ListItemIcon>{category.icon}</ListItemIcon>
                       {category.label}
                     </MenuItem>
@@ -204,19 +223,23 @@ const TransactionForm = ({
             name="amount"
             control={control}
             render={({ field }) => (
-              <TextField {...field}
-              //入力されている値が0ならば""にする
-               value={field.value === 0 ? "" :field.value}
-               //入力された際に文字列からintにしてフィールドに保存
-               onChange={(e) => {
-                //Nanだったときは０を入れる  10進数で
-                const newValue = parseInt(e.target.value,10) || 0;
-                field.onChange(newValue);
-               }}
-               label="金額" 
-               type="number" 
-               
-               />
+              <TextField
+                error={!!errors.amount}
+                //?はmessageがなかったらやらなくていいよってやつ
+                //errors.dateはきちんとした値が入っていたら存在しない
+                helperText={errors.amount?.message}
+                {...field}
+                //入力されている値が0ならば""にする
+                value={field.value === 0 ? "" : field.value}
+                //入力された際に文字列からintにしてフィールドに保存
+                onChange={(e) => {
+                  //Nanだったときは０を入れる  10進数で
+                  const newValue = parseInt(e.target.value, 10) || 0;
+                  field.onChange(newValue);
+                }}
+                label="金額"
+                type="number"
+              />
             )}
           />
 
@@ -225,7 +248,13 @@ const TransactionForm = ({
             name="content"
             control={control}
             render={({ field }) => (
-              <TextField {...field} label="内容" type="text" />
+              <TextField
+                error={!!errors.content}
+                helperText={errors.content?.message}
+                {...field}
+                label="内容"
+                type="text"
+              />
             )}
           />
 
