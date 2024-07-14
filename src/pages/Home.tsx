@@ -30,7 +30,7 @@ const Home = ({monthlyTransactions,setCurrentMonth}:HomeProps) => {
         </Box>
         {/* 右側コンテンツ */}
         <Box>
-            <TransactionMenu />
+            <TransactionMenu dailyTransactions ={dailyTransactions} currentDay={currentDay}/>
             <TransactionForm/>
         </Box>
     </Box>

@@ -13,7 +13,6 @@ export function financeCalculations(transactions:Transaction[]):Balance{
           }
           //　残高
           acc.balance = acc.income - acc.expense;
-          console.log("ieb",transaction.amount,acc.balance);
           return acc;
           //初期値の値
     },{income:0,expense:0,balance:0})
@@ -42,7 +41,6 @@ export function calculateDailyBalances(
     }
 
     acc[day].balance = acc[day].income - acc[day].expense;
-    console.log("IEB",acc[day].income,acc[day].expense,acc[day].balance);
     return acc;
     //今回の初期値（accに入れておく値）は空
   }, {});
