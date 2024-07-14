@@ -1,3 +1,4 @@
+import Calendar from "../components/Calendar";
 //Transaction ＝　商売
 //income 収入 expense 費用
 //型エイリアス type interfaceと違い、Mapped Typesが使える
@@ -20,9 +21,16 @@ export interface Transaction {
   type: TransactionType;
   category: IncomeCategory | ExpenseCategory;
 }
-  export interface Balance {
-    income: number;
-    expense: number;
-    balance: number;
-  }
+export interface Balance {
+  income: number;
+  expense: number;
+  balance: number;
+}
 
+export interface CalendarContent {
+  start: string,
+  //３桁ごとコンマ区切りにしたいので文字列
+  income: string,
+  expense: string,
+  balance: string,
+}
