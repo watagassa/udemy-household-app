@@ -7,13 +7,15 @@ import { DatesSetArg, EventContentArg } from '@fullcalendar/core'
 import { calculateDailyBalances } from '../utils/financeCalculations'
 import { Balance, CalendarContent, Transaction } from '../types'
 import { formatCurrency } from '../utils/formatting'
+import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 interface CalendarProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth:React.Dispatch<React.SetStateAction<Date>>
+  setCurrentDay: React.Dispatch<React.SetStateAction<string>>
 
 }
 
-const Calendar = ({monthlyTransactions,setCurrentMonth}:CalendarProps) => {
+const Calendar = ({monthlyTransactions,setCurrentMonth,setCurrentDay}:CalendarProps) => {
   // const events = [
   //   { title: 'Meeting', start: new Date() ,income:300,expense:200,balance:100 },
   //   { title: 'Meeting', start: "2024-07-20",income:300,expense:200,balance:100 },
@@ -59,19 +61,25 @@ const Calendar = ({monthlyTransactions,setCurrentMonth}:CalendarProps) => {
     //閲覧中の月をsetCurrentMonthに入れる
     setCurrentMonth(datesetInfo.view.currentStart);
   }
+  //dateClickの引き数の型DateClickArg
+  const handleDateClick = (dateInfo:DateClickArg) =>{
+    setCurrentDay(dateInfo.dateStr);
+  }
   //カレンダー表示
   return (
     <FullCalendar
     //日本語設定
     locale={jaLocale}
     //初期設定
-    //日にちをグリットで刻む
-    plugins={[dayGridPlugin]}
+    //日にちをグリットで刻む 
+    //plugins: [ interactionPlugin ] でdateClickが使えるようになる
+    plugins={[dayGridPlugin,interactionPlugin]}
     //月で表示
     initialView='dayGridMonth'
     events={calendarEvent}
     eventContent={renderEventContent}
     datesSet={handleDateSet}
+    dateClick={handleDateClick}
     />
 
   )
