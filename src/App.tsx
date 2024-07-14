@@ -68,7 +68,7 @@ function App() {
     }
     fecheTransaction();
   }, []);
-
+  //ひと月ごとのデータを取得
   const monthlyTransactions = transactions.filter((transaction) => {
     // transactionには取引データが入っている
     //　startsWith() は.の前の文字列が引数で始まっているかどうかでtrue falseを返す
@@ -81,7 +81,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<AppLayout />}>
-            <Route index element={<Home monthlyTransactions = {monthlyTransactions}/>} />
+            <Route index element={<Home monthlyTransactions = {monthlyTransactions} setCurrentMonth = {setCurrentMonth}/>} />
             <Route path="/report" element={<Report />} />
             <Route path="*" element={<NoMatch />} />
           </Route>

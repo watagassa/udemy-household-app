@@ -8,14 +8,17 @@ import { Transaction } from '../types/index'
 
 interface HomeProps {
     monthlyTransactions:Transaction[],
+    //(vscode)AppにあるsetCurrentMonthにマウスを置いておくと型がポップアップ表示されるよ
+    setCurrentMonth:React.Dispatch<React.SetStateAction<Date>>
+
 }
-const Home = ({monthlyTransactions}:HomeProps) => {
+const Home = ({monthlyTransactions,setCurrentMonth}:HomeProps) => {
   return (
     <Box sx= {{display: "flex"}}>
         {/* 左側コンテンツ */}
         <Box sx={{flexGrow:1}}>
             <MonthlySummary monthlyTransactions = {monthlyTransactions}/>
-            <Calendar monthlyTransactions = {monthlyTransactions}/>
+            <Calendar monthlyTransactions = {monthlyTransactions} setCurrentMonth={setCurrentMonth}/>
         </Box>
         {/* 右側コンテンツ */}
         <Box>

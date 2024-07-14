@@ -3,15 +3,17 @@ import React from 'react'
 import dayGridPlugin from "@fullcalendar/daygrid"
 import jaLocale from "@fullcalendar/core/locales/ja"
 import "../calendar.css"
-import { EventContentArg } from '@fullcalendar/core'
+import { DatesSetArg, EventContentArg } from '@fullcalendar/core'
 import { calculateDailyBalances } from '../utils/financeCalculations'
 import { Balance, CalendarContent, Transaction } from '../types'
 import { formatCurrency } from '../utils/formatting'
 interface CalendarProps {
   monthlyTransactions: Transaction[];
+  setCurrentMonth:React.Dispatch<React.SetStateAction<Date>>
+
 }
 
-const Calendar = ({monthlyTransactions}:CalendarProps) => {
+const Calendar = ({monthlyTransactions,setCurrentMonth}:CalendarProps) => {
   // const events = [
   //   { title: 'Meeting', start: new Date() ,income:300,expense:200,balance:100 },
   //   { title: 'Meeting', start: "2024-07-20",income:300,expense:200,balance:100 },
@@ -51,6 +53,13 @@ const Calendar = ({monthlyTransactions}:CalendarProps) => {
       </div>
     )
   }
+  //datesetInfoにはカレンダーの月情報が色々入っている
+  //今回は今閲覧中の月が欲しい
+  const handleDateSet = (datesetInfo:DatesSetArg) => {
+    //閲覧中の月をsetCurrentMonthに入れる
+    setCurrentMonth(datesetInfo.view.currentStart);
+  }
+  //カレンダー表示
   return (
     <FullCalendar
     //日本語設定
@@ -62,6 +71,7 @@ const Calendar = ({monthlyTransactions}:CalendarProps) => {
     initialView='dayGridMonth'
     events={calendarEvent}
     eventContent={renderEventContent}
+    datesSet={handleDateSet}
     />
 
   )
