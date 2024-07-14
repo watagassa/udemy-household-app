@@ -22,6 +22,8 @@ import TrainIcon from "@mui/icons-material/Train";
 import WorkIcon from "@mui/icons-material/Work";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import SavingsIcon from "@mui/icons-material/Savings";
+import {zodResolver} from "@hookform/resolvers/zod";
+import { transactionSchema } from "../validations/schema";
 interface TransactionFormProps {
   //戻り値voidの関数
   onCloseForm: () => void;
@@ -57,7 +59,7 @@ const TransactionForm = ({
     { label: "お小遣い", icon: <SavingsIcon fontSize="small" /> },
   ];
   const [categories, setCategories] = useState(expenseCategories);
-  const { control, setValue, watch } = useForm({
+  const { control, setValue, watch, formState:{errors},handleSubmit} = useForm({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -65,12 +67,15 @@ const TransactionForm = ({
       category: "",
       content: "",
     },
+    //zodのバリテーションチェックをreact-hooks-formと連携
+    resolver : zodResolver(transactionSchema),
   });
   const incomeExpenseToggle = (type: IncomeExpense) => {
     //{ control ,setValue}で作ったsetValueを使う
     //defaultValuesで指定した"type"にtypeをセット
     setValue("type", type);
   };
+  console.log(errors);
   //typeの値を監視
   const currentType = watch("type");
   //currentDayの値が変わる＝日付をクリックしたとき
@@ -86,6 +91,10 @@ const TransactionForm = ({
     setCategories(newCategories);
   }, [currentType]);
   //収支を入力するところ
+  const onsubmit = (data:any) => {
+    console.log(data);
+
+  }
   return (
     <Box
       sx={{
@@ -121,7 +130,8 @@ const TransactionForm = ({
         </IconButton>
       </Box>
       {/* フォーム要素 */}
-      <Box component={"form"}>
+      {/* onSubmitは送信処理 handleSubmit(onsubmit)でバリテーションチェックが通った時のみ実行*/}
+      <Box component={"form"} onSubmit={handleSubmit(onsubmit)}>
         <Stack spacing={2}>
           {/* 収支切り替えボタン */}
           <Controller
