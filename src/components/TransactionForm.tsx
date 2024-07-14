@@ -194,7 +194,19 @@ const TransactionForm = ({
             name="amount"
             control={control}
             render={({ field }) => (
-              <TextField {...field} label="金額" type="number" />
+              <TextField {...field}
+              //入力されている値が0ならば""にする
+               value={field.value === 0 ? "" :field.value}
+               //入力された際に文字列からintにしてフィールドに保存
+               onChange={(e) => {
+                //Nanだったときは０を入れる  10進数で
+                const newValue = parseInt(e.target.value,10) || 0;
+                field.onChange(newValue);
+               }}
+               label="金額" 
+               type="number" 
+               
+               />
             )}
           />
 
