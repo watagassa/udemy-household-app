@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
 import { Controller, useForm } from "react-hook-form";
@@ -27,7 +27,8 @@ const TransactionForm = ({
 }: TransactionFormProps) => {
   const formWidth = 320;
   //controlをJSX内で使えるようにする処理 初期値も決めている
-  const { control, setValue } = useForm({
+  //react-hook-formで使うものを入れている
+  const { control, setValue, watch } = useForm({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -41,6 +42,14 @@ const TransactionForm = ({
     //defaultValuesで指定した"type"にtypeをセット
     setValue("type", type);
   };
+  //typeの値を監視
+  const currentType = watch("type");
+  //currentDayの値が変わる＝日付をクリックしたとき
+  //dateをcurrentDayにする
+  //useEffectを使ってリアルタイムでdateを変更する
+  useEffect(() => {
+    setValue("date",currentDay)
+  }, [currentDay]);
   //収支を入力するところ
   return (
     <Box
@@ -161,7 +170,13 @@ const TransactionForm = ({
           />
 
           {/* 保存ボタン */}
-          <Button type="submit" variant="contained" color={"primary"} fullWidth>
+          {/* MUIにある"primary" : "error"の色を使って保存ボタンの色を変更 */}
+          <Button
+            type="submit"
+            variant="contained"
+            color={currentType === "income" ? "primary" : "error"}
+            fullWidth
+          >
             保存
           </Button>
         </Stack>
