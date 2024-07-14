@@ -9,11 +9,13 @@ import { Balance, CalendarContent, Transaction } from "../types";
 import { formatCurrency } from "../utils/formatting";
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { useTheme } from "@mui/material";
+import { isSameMonth } from "date-fns";
 interface CalendarProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
   currentDay: string;
+  today: string;
 }
 
 const Calendar = ({
@@ -21,9 +23,10 @@ const Calendar = ({
   setCurrentMonth,
   setCurrentDay,
   currentDay,
+  today,
 }: CalendarProps) => {
   //muiのuseTheme()を使用することでJSXの中でしか書けなかったtheme.palette.incomeColor.lightが書けるようになる
-  const theme = useTheme()
+  const theme = useTheme();
   // const events = [
   //   { title: 'Meeting', start: new Date() ,income:300,expense:200,balance:100 },
   //   { title: 'Meeting', start: "2024-07-20",income:300,expense:200,balance:100 },
@@ -72,11 +75,21 @@ const Calendar = ({
       </div>
     );
   };
+  //月の日付取得
   //datesetInfoにはカレンダーの月情報が色々入っている
   //今回は今閲覧中の月が欲しい
   const handleDateSet = (datesetInfo: DatesSetArg) => {
+    const currentMonth = datesetInfo.view.currentStart;
     //閲覧中の月をsetCurrentMonthに入れる
     setCurrentMonth(datesetInfo.view.currentStart);
+    const todayDate = new Date();
+    //date-fnsのメソッド
+    //月が変わった時、現在表示中の月が今月だった場合のみ
+    if (isSameMonth(todayDate, currentMonth)) {
+      //今日の日にちに日時を指定
+      //todayはstring型　Date型ではない
+      setCurrentDay(today);
+    }
   };
   //dateClickの引き数の型DateClickArg
   const handleDateClick = (dateInfo: DateClickArg) => {
