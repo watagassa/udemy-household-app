@@ -19,7 +19,7 @@ const Home = ({monthlyTransactions,setCurrentMonth}:HomeProps) => {
 
   const dailyTransactions =  monthlyTransactions.filter((transaction)=>{
     return transaction.date === currentDay;
-  })
+  });
   console.log(dailyTransactions);
   return (
     <Box sx= {{display: "flex"}}>

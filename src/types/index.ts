@@ -5,7 +5,7 @@ import Calendar from "../components/Calendar";
 // "income" | "expense" この書き方はユニオン型
 // Mapped Types
 export type TransactionType = "income" | "expense";
-export type IncomeCategory = "収入" | "副収入" | "お小遣い";
+export type IncomeCategory = "副収入" | "お小遣い"|"給与";
 export type ExpenseCategory =
   | "食費"
   | "日用品"
