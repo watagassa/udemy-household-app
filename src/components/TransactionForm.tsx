@@ -80,7 +80,10 @@ const TransactionForm = ({
     setValue,
     watch,
     formState: { errors },
+    //保存時の処理
     handleSubmit,
+    //リセットしたい時に使う関数
+    reset,
   } = useForm<Schema>({
     defaultValues: {
       type: "expense",
@@ -122,6 +125,7 @@ const TransactionForm = ({
   const onsubmit:SubmitHandler<Schema> = (data) => {
     onSaveTransaction(data);
     console.log(data);
+    reset();
   };
   return (
     <Box
