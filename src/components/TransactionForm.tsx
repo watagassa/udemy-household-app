@@ -30,7 +30,7 @@ interface TransactionFormProps {
   onCloseForm: () => void;
   isEntryDrawerOpen: boolean;
   currentDay: string;
-  onSaveTransaction : (transaction: Schema) => Promise<void>;
+  onSaveTransaction: (transaction: Schema) => Promise<void>;
 }
 
 type IncomeExpense = "income" | "expense";
@@ -68,12 +68,12 @@ const TransactionForm = ({
   const [categories, setCategories] = useState(expenseCategories);
   //フォームに入力される型はSchema
   // type Schema = {
-//     type: "income" | "expense";
-//     date: string;
-//     amount: number;
-//     content: string;
-//     category:""| "副収入" | "お小遣い" | "給与" | "食費" | "日用品" | "住居費" | "交際費" | "娯楽" | "交通費";
-// }
+  //     type: "income" | "expense";
+  //     date: string;
+  //     amount: number;
+  //     content: string;
+  //     category:""| "副収入" | "お小遣い" | "給与" | "食費" | "日用品" | "住居費" | "交際費" | "娯楽" | "交通費";
+  // }
 
   const {
     control,
@@ -106,11 +106,13 @@ const TransactionForm = ({
 
   //typeの値を監視
   const currentType = watch("type");
+  //収支タイプを切り替える関数
   //currentDayの値が変わる＝日付をクリックしたとき
   //dateをcurrentDayにする
   //useEffectを使ってリアルタイムでdateを変更する
   useEffect(() => {
     setValue("date", currentDay);
+    setValue("category", "");
   }, [currentDay]);
 
   //収支タイプに応じたカテゴリを取得
@@ -119,13 +121,23 @@ const TransactionForm = ({
       currentType === "expense" ? expenseCategories : incomeCategories;
     setCategories(newCategories);
   }, [currentType]);
-  
+
   //  保存した時
   //schema.jsで作ったdataの型指定を使用 :SubmitHandler<Schema>が推奨されているが、(data:Schema)でもいい
-  const onsubmit:SubmitHandler<Schema> = (data) => {
+  const onsubmit: SubmitHandler<Schema> = (data) => {
     onSaveTransaction(data);
     console.log(data);
-    reset();
+    //reset();のみだとdefaultvalueの値が入る
+    //defaultvalueの値は保持されてしまうため、date: currentDay,
+    //としていても初期値の今日の日付でリセットされる
+    //{}で囲み、オブジェクトとして書く
+    reset({
+      type: "expense",
+      date: currentDay,
+      amount: 0,
+      category: "",
+      content: "",
+    });
   };
   return (
     <Box
@@ -233,7 +245,7 @@ const TransactionForm = ({
                   label="カテゴリ"
                   select
                 >
-                  {categories.map((category,index) => (
+                  {categories.map((category, index) => (
                     //カテゴリごとに
                     <MenuItem value={category.label} key={index}>
                       <ListItemIcon>{category.icon}</ListItemIcon>
