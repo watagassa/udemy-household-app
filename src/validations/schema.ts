@@ -3,7 +3,7 @@
 import { z } from "zod";
 
 export const transactionSchema = z.object({
-    //enumで列挙する
+  //enumで列挙する
   type: z.enum(["income", "expense"]),
   date: z.string().min(1, { message: "日付は必須です" }),
   amount: z.number().min(1, { message: "金額は1円以上必須です" }),
@@ -12,14 +12,16 @@ export const transactionSchema = z.object({
     .min(1, { message: "内容を入力してください" })
     .max(50, { message: "内容は50文字以内にしてください。" }),
 
-    //ユニオン型の型注釈 中に列挙された型でないと弾く
+  //ユニオン型の型注釈 中に列挙された型でないと弾く　    //絞り込む=refine
   category: z
     .union([
       z.enum(["食費", "日用品", "住居費", "交際費", "娯楽", "交通費"]),
       z.enum(["給与", "副収入", "お小遣い"]),
-      z.literal(""),
+      // z.literal(""),　//これだとundefindとして認識されてしまう
+      //参考
+      //https://shimotsu.hatenablog.com/entry/2022/02/05/213148
+      z.string().length(0), //大きさ０の文字列を許容= ""
     ])
-    //絞り込む=refine
     .refine((val) => val !== "", {
       message: "カテゴリを選択してください",
     }),

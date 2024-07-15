@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ExpenseCategory, IncomeCategory } from "../types";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import AddHomeIcon from "@mui/icons-material/AddHome";
@@ -23,7 +23,7 @@ import WorkIcon from "@mui/icons-material/Work";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import SavingsIcon from "@mui/icons-material/Savings";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { transactionSchema } from "../validations/schema";
+import { Schema, transactionSchema } from "../validations/schema";
 interface TransactionFormProps {
   //戻り値voidの関数
   onCloseForm: () => void;
@@ -59,13 +59,21 @@ const TransactionForm = ({
     { label: "お小遣い", icon: <SavingsIcon fontSize="small" /> },
   ];
   const [categories, setCategories] = useState(expenseCategories);
+  //フォームに入力される型はSchema
+  // type Schema = {
+//     type: "income" | "expense";
+//     date: string;
+//     amount: number;
+//     content: string;
+//     category: "副収入" | "お小遣い" | "給与" | "食費" | "日用品" | "住居費" | "交際費" | "娯楽" | "交通費";
+// }
   const {
     control,
     setValue,
     watch,
     formState: { errors },
     handleSubmit,
-  } = useForm({
+  } = useForm<Schema>({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -97,7 +105,8 @@ const TransactionForm = ({
     setCategories(newCategories);
   }, [currentType]);
   //収支を入力するところ
-  const onsubmit = (data: any) => {
+  //schema.jsで作ったdataの型指定を使用 :SubmitHandler<Schema>が推奨されているが、(data:Schema)でもいい
+  const onsubmit:SubmitHandler<Schema> = (data) => {
     console.log(data);
   };
   return (
