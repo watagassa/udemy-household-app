@@ -88,6 +88,19 @@ function App() {
       // Add a new document with a generated id.
       const docRef = await addDoc(collection(db, "Transactions"),transaction );
       console.log("Document written with ID: ", docRef.id);
+      //新しく値が保存されたときに、画面に即反映させるための関数
+      const newTransaction ={
+        id:docRef.id,
+        ...transaction,
+        //category:dsana,
+        //type:sags,
+        //といったふうにオブジェクトの中身を展開するのと同じ
+
+        // newTransactionの型を型アサーションで
+       } as Transaction
+      //推奨していない setTransactions([...transactions,newTransaction]);
+      //prevTransactionsには前回のデータが入っている
+      setTransactions(prevTransactions =>[...prevTransactions,newTransaction]);//推奨
     } catch (err) {
       //errにcodeとmessageがある場合はfirebaseのerr
       //
@@ -102,7 +115,7 @@ function App() {
       }
     }
   };
-  
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
