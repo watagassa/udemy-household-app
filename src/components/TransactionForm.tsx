@@ -24,21 +24,26 @@ import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import SavingsIcon from "@mui/icons-material/Savings";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Schema, transactionSchema } from "../validations/schema";
+
 interface TransactionFormProps {
   //戻り値voidの関数
   onCloseForm: () => void;
   isEntryDrawerOpen: boolean;
   currentDay: string;
+  onSaveTransaction : (transaction: Schema) => Promise<void>;
 }
+
 type IncomeExpense = "income" | "expense";
 interface CategoryItem {
   label: IncomeCategory | ExpenseCategory;
   icon: JSX.Element;
 }
+
 const TransactionForm = ({
   onCloseForm,
   isEntryDrawerOpen,
   currentDay,
+  onSaveTransaction,
 }: TransactionFormProps) => {
   const formWidth = 320;
   //controlをJSX内で使えるようにする処理 初期値も決めている
@@ -52,12 +57,14 @@ const TransactionForm = ({
     { label: "娯楽", icon: <SportsTennisIcon fontSize="small" /> },
     { label: "交通費", icon: <TrainIcon fontSize="small" /> },
   ];
+
   // 収入用カテゴリ
   const incomeCategories: CategoryItem[] = [
     { label: "給与", icon: <WorkIcon fontSize="small" /> },
     { label: "副収入", icon: <AddBusinessIcon fontSize="small" /> },
     { label: "お小遣い", icon: <SavingsIcon fontSize="small" /> },
   ];
+
   const [categories, setCategories] = useState(expenseCategories);
   //フォームに入力される型はSchema
   // type Schema = {
@@ -65,8 +72,9 @@ const TransactionForm = ({
 //     date: string;
 //     amount: number;
 //     content: string;
-//     category: "副収入" | "お小遣い" | "給与" | "食費" | "日用品" | "住居費" | "交際費" | "娯楽" | "交通費";
+//     category:""| "副収入" | "お小遣い" | "給与" | "食費" | "日用品" | "住居費" | "交際費" | "娯楽" | "交通費";
 // }
+
   const {
     control,
     setValue,
@@ -84,12 +92,15 @@ const TransactionForm = ({
     //zodのバリテーションチェックをreact-hooks-formと連携
     resolver: zodResolver(transactionSchema),
   });
+
   const incomeExpenseToggle = (type: IncomeExpense) => {
     //{ control ,setValue}で作ったsetValueを使う
     //defaultValuesで指定した"type"にtypeをセット
     setValue("type", type);
   };
+
   console.log(errors);
+
   //typeの値を監視
   const currentType = watch("type");
   //currentDayの値が変わる＝日付をクリックしたとき
@@ -98,15 +109,18 @@ const TransactionForm = ({
   useEffect(() => {
     setValue("date", currentDay);
   }, [currentDay]);
+
   //収支タイプに応じたカテゴリを取得
   useEffect(() => {
     const newCategories =
       currentType === "expense" ? expenseCategories : incomeCategories;
     setCategories(newCategories);
   }, [currentType]);
-  //収支を入力するところ
+  
+  //  保存した時
   //schema.jsで作ったdataの型指定を使用 :SubmitHandler<Schema>が推奨されているが、(data:Schema)でもいい
   const onsubmit:SubmitHandler<Schema> = (data) => {
+    onSaveTransaction(data);
     console.log(data);
   };
   return (

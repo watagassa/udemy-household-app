@@ -9,30 +9,33 @@ import { theme } from "./theme/theme";
 import { ThemeProvider } from "@emotion/react";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Transaction } from "./types/index";
-import { collection, getDocs} from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
 import { error } from "console";
 import { format } from "date-fns";
 import { formatMonth } from "./utils/formatting";
+import { Schema } from "./validations/schema";
 function App() {
   //型ガードはbooleanを返す
   //TSの型ガードを使用　型によって処理を変える  　errが{code:string,message:string} の型だったときに「true」を返す
-  function isFireStoreError(err: unknown):err is {code:string,message:string} {
+  function isFireStoreError(
+    err: unknown
+  ): err is { code: string; message: string } {
     return typeof err === "object" && err !== null && "code" in err;
   }
   //firebaseのデータを保持するためのuseState typesの中のTransaction型を使用
   //取引の記録を保存する
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   //useState<Date>がなくとも、TSの型推論でエラーが出ていない
-  const [currentMonth,setCurrentMonth] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   //date-fnsのformat Year Month Dayの順で書く
   //format(currentMonth,"yyyy-MM");
   //初回レンダリング時のみ（最後の引数の[]が空）
-  //async functionは呼び出されるとPromiseを返す。　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
+  //async functionは呼び出されるとPromiseを返す。
   //console.log(transactions);
   useEffect(() => {
     //useEffectにasyncがつけられないために作った関数
-    const fecheTransaction = async() => {
+    const fecheTransaction = async () => {
       try {
         //dbはfirebaseの初期化ファイルで設定した物　　　firebaseにあるコレクション名
         const querySnapshot = await getDocs(collection(db, "Transactions"));
@@ -47,7 +50,7 @@ function App() {
             id: doc.id,
             //型アサーション これはTransactionですよと開発者が伝えるためのもの
             //でも、もし中身がTransaction型と違っていてもTransaction型と判断してしまう
-          }as Transaction
+          } as Transaction;
         });
         console.log(transactionsData);
         setTransactions(transactionsData);
@@ -55,33 +58,67 @@ function App() {
       } catch (err) {
         //errにcodeとmessageがある場合はfirebaseのerr
         //
-        if(isFireStoreError(err)){
+        if (isFireStoreError(err)) {
           // json形式　json形式のもの , 細かいルールを関数で指定, インデントで字を２スペース開ける
           //console.error(JSON.stringify(err,null,2));
-          console.error("firestoreのエラー",err);
+          console.error("firestoreのエラー", err);
           // console.error("エラーメッセージ",err.message);
           // console.error("エラーコード"+err.code);
         } else {
-          console.error("一般的なエラー",err);
+          console.error("一般的なエラー", err);
         }
       }
-    }
+    };
     fecheTransaction();
   }, []);
+
   //ひと月ごとのデータを取得
   const monthlyTransactions = transactions.filter((transaction) => {
     // transactionには取引データが入っている
     //　startsWith() は.の前の文字列が引数で始まっているかどうかでtrue falseを返す
     return transaction.date.startsWith(formatMonth(currentMonth));
   });
-  console.log(monthlyTransactions);
+
+  //取引を保存する処理
+  const handleSaveTransaction = async(transaction: Schema) => {
+    //非同期で行う
+    try {
+      //firebaseに保存する処理
+      //addDocはCloud Firestore によって ID が自動的に生成
+      // Add a new document with a generated id.
+      const docRef = await addDoc(collection(db, "Transactions"),transaction );
+      console.log("Document written with ID: ", docRef.id);
+    } catch (err) {
+      //errにcodeとmessageがある場合はfirebaseのerr
+      //
+      if (isFireStoreError(err)) {
+        // json形式　json形式のもの , 細かいルールを関数で指定, インデントで字を２スペース開ける
+        //console.error(JSON.stringify(err,null,2));
+        console.error("firestoreのエラー", err);
+        // console.error("エラーメッセージ",err.message);
+        // console.error("エラーコード"+err.code);
+      } else {
+        console.error("一般的なエラー", err);
+      }
+    }
+  };
+  
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Routes>
           <Route path="/" element={<AppLayout />}>
-            <Route index element={<Home monthlyTransactions = {monthlyTransactions} setCurrentMonth = {setCurrentMonth}/>} />
+            <Route
+              index
+              element={
+                <Home
+                  monthlyTransactions={monthlyTransactions}
+                  setCurrentMonth={setCurrentMonth}
+                  onSaveTransaction = {handleSaveTransaction}
+                />
+              }
+            />
             <Route path="/report" element={<Report />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
