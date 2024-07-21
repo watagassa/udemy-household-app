@@ -14,12 +14,14 @@ interface MonthSelectorProps {
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>
 }
 const MonthSelector = ({ currentMonth,setCurrentMonth }: MonthSelectorProps) => {
-
-    // const handleDateChange = (newDate: Date | null) => {
-    //   if (newDate) {
-    //     setCurrentMonth(newDate);
-    //   }
-    // };
+    //  newDateには選択された日付の情報が入っている
+    //何も選択していない場合、nullになる
+    const handleDateChange = (newDate: Date | null) => {
+        //nullでないなら実行
+      if (newDate) {
+        setCurrentMonth(newDate);
+      }
+    };
 
     //先月ボタンを押したときの処理
     const handlePreviousMonth = () => {
@@ -58,7 +60,7 @@ const MonthSelector = ({ currentMonth,setCurrentMonth }: MonthSelectorProps) => 
           先月
         </Button>
         <DatePicker
-          //   onChange={handleDateChange}
+            onChange={handleDateChange}
           value={currentMonth}
           label="年月を選択"
           sx={{ mx: 2, background: "white" }}
