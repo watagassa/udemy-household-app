@@ -24,6 +24,7 @@ import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import SavingsIcon from "@mui/icons-material/Savings";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Schema, transactionSchema } from "../validations/schema";
+import { Category } from "@mui/icons-material";
 
 interface TransactionFormProps {
   //戻り値voidの関数
@@ -131,6 +132,16 @@ const TransactionForm = ({
     setCategories(newCategories);
   }, [currentType]);
 
+  //選択肢が更新されたか確認
+  useEffect(()=>{
+    if(selectedTransaction){
+      const categoryExist =
+      //some関数は配列の要素が一つでも条件に合っていればtrueを返す
+      categories.some((category) => category.label === selectedTransaction?.category)
+      setValue("category",categoryExist ? selectedTransaction.category : "");
+    }
+
+  },[selectedTransaction,categories])
   //  送信処理
   //schema.jsで作ったdataの型指定を使用 :SubmitHandler<Schema>が推奨されているが、(data:Schema)でもいい
   const onsubmit: SubmitHandler<Schema> = (data) => {
