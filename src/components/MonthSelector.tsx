@@ -7,7 +7,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { ja } from "date-fns/locale";
 import { addMonths } from "date-fns";
-// import { useAppContext } from "../context/AppContext";
+//  import { useAppContext } from "../context/AppContext";
 
 const MonthSelector = () => {
   //   const { currentMonth, setCurrentMonth } = useAppContext();
@@ -33,7 +33,10 @@ const MonthSelector = () => {
   return (
     <LocalizationProvider
       dateAdapter={AdapterDateFns}
-      //   adapterLocale={ja}
+      //日付の形式を日本語にする
+      adapterLocale={ja}
+      // monthAndYearが存在しないため、コメントアウト
+      // DatePickerの方で違う形で指定する
       //   dateFormats={{ monthAndYear: "yyyy年 MM月" }}
     >
       <Box
@@ -53,17 +56,20 @@ const MonthSelector = () => {
         <DatePicker
           //   onChange={handleDateChange}
           //   value={currentMonth}
-        //   label="年月を選択"
-          sx={{ mx: 2,
-            //  background: "white" 
-            }}
-          //   views={["year", "month"]}
-          //   format="yyyy/MM"
-          //   slotProps={{
-          //     toolbar: {
-          //       toolbarFormat: "yyyy年MM月",
-          //     },
-          //   }}
+          label="年月を選択"
+          sx={{ mx: 2, background: "white" }}
+          //年と月のみ選択できるようにする
+          views={["year", "month"]}
+          //MMMM/YYYYだったのをフォーマット
+          format="yyyy/MM"
+          //中の値もフォーマット
+          slotProps={{
+            toolbar: {
+              toolbarFormat: "yyyy/MM",
+            },
+            // dateFormats={{ monthAndYear: "yyyy年 MM月" }}代わり
+            calendarHeader: { format: "yyyy年MM月" },
+          }}
         />
         <Button
           // onClick={handleNextMonth}
