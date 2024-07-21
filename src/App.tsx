@@ -156,6 +156,12 @@ function App() {
       const docRef = doc(db, "Transactions", transactionId);
       //更新する
       await updateDoc(docRef, transaction);
+
+      //フロント更新 transactions Stateをマップ関数で展開、変更する
+      const updatedTransacitons = transactions.map((t) =>
+        t.id === transactionId ? { ...t, ...transaction } : t
+      ) as Transaction[];
+      setTransactions(updatedTransacitons);
     } catch (err) {
       if (isFireStoreError(err)) {
         console.error("firestoreのエラー", err);
@@ -179,7 +185,7 @@ function App() {
                   setCurrentMonth={setCurrentMonth}
                   onSaveTransaction={handleSaveTransaction}
                   onDeleteTransaction={handleDeleteTransaction}
-                  onUpdateTransaction = {handleUpdateTransaction}
+                  onUpdateTransaction={handleUpdateTransaction}
                 />
               }
             />
