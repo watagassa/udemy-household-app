@@ -13,9 +13,11 @@ interface HomeProps {
   //(vscode)AppにあるsetCurrentMonthにマウスを置いておくと型がポップアップ表示されるよ
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   onSaveTransaction : (transaction: Schema) => Promise<void>;
+  setSelectedTransaction: React.Dispatch<React.SetStateAction<Transaction | null>>;
+  selectedTransaction: Transaction | null;
 }
 
-const Home = ({ monthlyTransactions, setCurrentMonth,onSaveTransaction }: HomeProps) => {
+const Home = ({ monthlyTransactions, setCurrentMonth,onSaveTransaction ,setSelectedTransaction,selectedTransaction}: HomeProps) => {
   const today = format(new Date(), "yyyy-MM-dd");
   const [currentDay, setCurrentDay] = useState(today);
   const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
@@ -35,6 +37,8 @@ const Home = ({ monthlyTransactions, setCurrentMonth,onSaveTransaction }: HomePr
     //取引のカードが押された時にその取引フォームを開く
     setIsEntryDrawerOpen(true);
     console.log(transaction);
+    //選択したステートを取り出す
+    setSelectedTransaction(transaction);
   }
   return (
     <Box sx={{ display: "flex" }}>
@@ -62,6 +66,7 @@ const Home = ({ monthlyTransactions, setCurrentMonth,onSaveTransaction }: HomePr
           isEntryDrawerOpen={isEntryDrawerOpen}
           currentDay={currentDay}
           onSaveTransaction = {onSaveTransaction}
+          selectedTransaction = {selectedTransaction}
         />
       </Box>
     </Box>

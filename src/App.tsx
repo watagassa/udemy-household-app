@@ -15,6 +15,7 @@ import { error } from "console";
 import { format } from "date-fns";
 import { formatMonth } from "./utils/formatting";
 import { Schema } from "./validations/schema";
+
 function App() {
   //型ガードはbooleanを返す
   //TSの型ガードを使用　型によって処理を変える  　errが{code:string,message:string} の型だったときに「true」を返す
@@ -28,6 +29,8 @@ function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   //useState<Date>がなくとも、TSの型推論でエラーが出ていない
   const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  const [selectedTransaction,setSelectedTransaction] = useState<Transaction | null>(null);
   //date-fnsのformat Year Month Dayの順で書く
   //format(currentMonth,"yyyy-MM");
   //初回レンダリング時のみ（最後の引数の[]が空）
@@ -129,6 +132,9 @@ function App() {
                   monthlyTransactions={monthlyTransactions}
                   setCurrentMonth={setCurrentMonth}
                   onSaveTransaction = {handleSaveTransaction}
+                  setSelectedTransaction = {setSelectedTransaction}
+                  selectedTransaction = {selectedTransaction}
+
                 />
               }
             />

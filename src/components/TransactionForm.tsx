@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { ExpenseCategory, IncomeCategory } from "../types";
+import { ExpenseCategory, IncomeCategory, Transaction } from "../types";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import AddHomeIcon from "@mui/icons-material/AddHome";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
@@ -31,6 +31,7 @@ interface TransactionFormProps {
   isEntryDrawerOpen: boolean;
   currentDay: string;
   onSaveTransaction: (transaction: Schema) => Promise<void>;
+  selectedTransaction: Transaction | null;
 }
 
 type IncomeExpense = "income" | "expense";
@@ -44,6 +45,7 @@ const TransactionForm = ({
   isEntryDrawerOpen,
   currentDay,
   onSaveTransaction,
+  selectedTransaction
 }: TransactionFormProps) => {
   const formWidth = 320;
   //controlをJSX内で使えるようにする処理 初期値も決めている
@@ -122,7 +124,7 @@ const TransactionForm = ({
     setCategories(newCategories);
   }, [currentType]);
 
-  //  保存した時
+  //  送信処理
   //schema.jsで作ったdataの型指定を使用 :SubmitHandler<Schema>が推奨されているが、(data:Schema)でもいい
   const onsubmit: SubmitHandler<Schema> = (data) => {
     onSaveTransaction(data);
@@ -139,6 +141,19 @@ const TransactionForm = ({
       content: "",
     });
   };
+
+ useEffect(()=>{
+  //selectedTransactionがnullでない場合
+    if(selectedTransaction){
+      setValue("type",selectedTransaction.type);
+      setValue("date",selectedTransaction.date);
+      setValue("amount",selectedTransaction.amount);
+      setValue("category",selectedTransaction.category);
+      setValue("content",selectedTransaction.content);
+
+    }
+ },[selectedTransaction]);
+
   return (
     <Box
       sx={{
