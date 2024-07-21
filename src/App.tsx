@@ -9,7 +9,7 @@ import { theme } from "./theme/theme";
 import { ThemeProvider } from "@emotion/react";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Transaction } from "./types/index";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
 import { error } from "console";
 import { format } from "date-fns";
@@ -30,7 +30,6 @@ function App() {
   //useState<Date>がなくとも、TSの型推論でエラーが出ていない
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  const [selectedTransaction,setSelectedTransaction] = useState<Transaction | null>(null);
   //date-fnsのformat Year Month Dayの順で書く
   //format(currentMonth,"yyyy-MM");
   //初回レンダリング時のみ（最後の引数の[]が空）
@@ -83,27 +82,30 @@ function App() {
   });
 
   //取引を保存する処理
-  const handleSaveTransaction = async(transaction: Schema) => {
+  const handleSaveTransaction = async (transaction: Schema) => {
     //非同期で行う
     try {
       //firebaseに保存する処理
       //addDocはCloud Firestore によって ID が自動的に生成
       // Add a new document with a generated id.
-      const docRef = await addDoc(collection(db, "Transactions"),transaction );
+      const docRef = await addDoc(collection(db, "Transactions"), transaction);
       console.log("Document written with ID: ", docRef.id);
       //新しく値が保存されたときに、画面に即反映させるための関数
-      const newTransaction ={
-        id:docRef.id,
+      const newTransaction = {
+        id: docRef.id,
         ...transaction,
         //category:dsana,
         //type:sags,
         //といったふうにオブジェクトの中身を展開するのと同じ
 
         // newTransactionの型を型アサーションで
-       } as Transaction
+      } as Transaction;
       //推奨していない setTransactions([...transactions,newTransaction]);
       //prevTransactionsには前回のデータが入っている
-      setTransactions(prevTransactions =>[...prevTransactions,newTransaction]);//推奨
+      setTransactions((prevTransactions) => [
+        ...prevTransactions,
+        newTransaction,
+      ]); //推奨
     } catch (err) {
       //errにcodeとmessageがある場合はfirebaseのerr
       //
@@ -113,6 +115,19 @@ function App() {
         console.error("firestoreのエラー", err);
         // console.error("エラーメッセージ",err.message);
         // console.error("エラーコード"+err.code);
+      } else {
+        console.error("一般的なエラー", err);
+      }
+    }
+  };
+  //取引を削除する処理
+  const handleDeleteTransaction = async(transactionId: string) => {
+    try {
+        //firestoreのデータを削除
+        await deleteDoc(doc(db, "Transactions", transactionId));
+    }  catch (err) {
+      if (isFireStoreError(err)) {
+        console.error("firestoreのエラー", err);
       } else {
         console.error("一般的なエラー", err);
       }
@@ -131,10 +146,8 @@ function App() {
                 <Home
                   monthlyTransactions={monthlyTransactions}
                   setCurrentMonth={setCurrentMonth}
-                  onSaveTransaction = {handleSaveTransaction}
-                  setSelectedTransaction = {setSelectedTransaction}
-                  selectedTransaction = {selectedTransaction}
-
+                  onSaveTransaction={handleSaveTransaction}
+                  onDeleteTransaction = {handleDeleteTransaction}
                 />
               }
             />

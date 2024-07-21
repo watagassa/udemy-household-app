@@ -32,6 +32,7 @@ interface TransactionFormProps {
   currentDay: string;
   onSaveTransaction: (transaction: Schema) => Promise<void>;
   selectedTransaction: Transaction | null;
+  onDeleteTransaction: (transactionId: string) => Promise<void>
 }
 
 type IncomeExpense = "income" | "expense";
@@ -46,6 +47,7 @@ const TransactionForm = ({
   currentDay,
   onSaveTransaction,
   selectedTransaction,
+  onDeleteTransaction
 }: TransactionFormProps) => {
   const formWidth = 320;
   //controlをJSX内で使えるようにする処理 初期値も決めている
@@ -160,6 +162,13 @@ const TransactionForm = ({
       });
     }
   }, [selectedTransaction]);
+
+  const handleDelete = () => {
+    if(selectedTransaction){
+      onDeleteTransaction(selectedTransaction.id);
+    }
+
+  }
 
   return (
     <Box
@@ -329,6 +338,18 @@ const TransactionForm = ({
           >
             保存
           </Button>
+          {/* 削除ボタン */}
+          {/* selectedTransactionがnullでない場合()内の処理を実行 */}
+          {selectedTransaction && (
+            <Button
+              onClick={handleDelete} 
+              variant="outlined"
+              color={"secondary"}
+              fullWidth
+            >
+              削除
+            </Button>
+          )}
         </Stack>
       </Box>
     </Box>
