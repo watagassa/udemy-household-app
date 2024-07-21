@@ -75,6 +75,7 @@ const Home = ({ monthlyTransactions, setCurrentMonth,onSaveTransaction,onDeleteT
           currentDay={currentDay}
           onSaveTransaction = {onSaveTransaction}
           selectedTransaction = {selectedTransaction}
+          setSelectedTransaction = {setSelectedTransaction}
           onDeleteTransaction = {onDeleteTransaction}
         />
       </Box>

@@ -125,6 +125,11 @@ function App() {
     try {
         //firestoreのデータを削除
         await deleteDoc(doc(db, "Transactions", transactionId));
+        //リロードせずとも削除を反映させるための処理
+        const filterdTransactions = transactions.filter(
+          (transaciton) => transaciton.id !== transactionId
+        )
+        setTransactions(filterdTransactions);
     }  catch (err) {
       if (isFireStoreError(err)) {
         console.error("firestoreのエラー", err);
