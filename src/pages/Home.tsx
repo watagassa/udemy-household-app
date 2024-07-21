@@ -27,10 +27,17 @@ const Home = ({ monthlyTransactions, setCurrentMonth,onSaveTransaction ,setSelec
   //console.log(dailyTransactions);
   const closeForm = () => {
     setIsEntryDrawerOpen(!isEntryDrawerOpen);
+    setSelectedTransaction(null);
   };
   //フォームの開閉処理
   const handleAddTransactionForm = () => {
-    setIsEntryDrawerOpen(!isEntryDrawerOpen);
+    //すでにある取引を選択した場合、閉処理は行わない
+    if(selectedTransaction){
+      setSelectedTransaction(null);
+    } else{
+      setIsEntryDrawerOpen(!isEntryDrawerOpen);
+    }
+
   };
   //取引が選択されたときの処理
   const handleSelectTransaction = (transaction:Transaction) => {

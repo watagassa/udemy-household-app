@@ -45,7 +45,7 @@ const TransactionForm = ({
   isEntryDrawerOpen,
   currentDay,
   onSaveTransaction,
-  selectedTransaction
+  selectedTransaction,
 }: TransactionFormProps) => {
   const formWidth = 320;
   //controlをJSX内で使えるようにする処理 初期値も決めている
@@ -142,17 +142,24 @@ const TransactionForm = ({
     });
   };
 
- useEffect(()=>{
-  //selectedTransactionがnullでない場合
-    if(selectedTransaction){
-      setValue("type",selectedTransaction.type);
-      setValue("date",selectedTransaction.date);
-      setValue("amount",selectedTransaction.amount);
-      setValue("category",selectedTransaction.category);
-      setValue("content",selectedTransaction.content);
-
+  useEffect(() => {
+    //selectedTransactionがnullでない場合
+    if (selectedTransaction) {
+      setValue("type", selectedTransaction.type);
+      setValue("date", selectedTransaction.date);
+      setValue("amount", selectedTransaction.amount);
+      setValue("category", selectedTransaction.category);
+      setValue("content", selectedTransaction.content);
+    } else {
+      reset({
+        type: "expense",
+        date: currentDay,
+        amount: 0,
+        category: "",
+        content: "",
+      });
     }
- },[selectedTransaction]);
+  }, [selectedTransaction]);
 
   return (
     <Box
