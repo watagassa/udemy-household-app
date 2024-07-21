@@ -34,7 +34,7 @@ interface TransactionFormProps {
   selectedTransaction: Transaction | null;
   setSelectedTransaction: React.Dispatch<React.SetStateAction<Transaction | null>>
   onDeleteTransaction: (transactionId: string) => Promise<void>
-
+  onUpdateTransaction: (transaction: Schema, transactionId: string) => Promise<void>
 }
 
 type IncomeExpense = "income" | "expense";
@@ -51,6 +51,7 @@ const TransactionForm = ({
   selectedTransaction,
   setSelectedTransaction,
   onDeleteTransaction,
+  onUpdateTransaction,
 
 }: TransactionFormProps) => {
   const formWidth = 320;

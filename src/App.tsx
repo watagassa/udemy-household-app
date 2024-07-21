@@ -15,6 +15,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { error } from "console";
@@ -144,10 +145,17 @@ function App() {
       }
     }
   };
-
-  const handleUpdateTransaction = () => {
+  //取引を更新する処理
+  const handleUpdateTransaction = async (
+    transaction: Schema,
+    transactionId: string
+  ) => {
     try {
       //firestore更新処理
+      //更新対象を取得
+      const docRef = doc(db, "Transactions", transactionId);
+      //更新する
+      await updateDoc(docRef, transaction);
     } catch (err) {
       if (isFireStoreError(err)) {
         console.error("firestoreのエラー", err);
@@ -171,6 +179,7 @@ function App() {
                   setCurrentMonth={setCurrentMonth}
                   onSaveTransaction={handleSaveTransaction}
                   onDeleteTransaction={handleDeleteTransaction}
+                  onUpdateTransaction = {handleUpdateTransaction}
                 />
               }
             />
