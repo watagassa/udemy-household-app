@@ -5,7 +5,11 @@ import CategoryChart from "../components/CategoryChart";
 import TransactionTable from "../components/TransactionTable";
 import BarChart from "../components/BarChart";
 
-const Report = () => {
+interface ReportProps {
+  currentMonth: Date;
+  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>
+}
+const Report = ({currentMonth,setCurrentMonth}:ReportProps) => {
   const commonPaperStyle = {
     height: "400px",
     // flexGrowを使用するためにflex
@@ -20,7 +24,10 @@ const Report = () => {
       {/* xsはMUIが用意しているブレークポイント */}
       <Grid item xs={12}>
         {/* 日付選択エリア */}
-        <MonthSelector />
+        <MonthSelector 
+        currentMonth={currentMonth}
+        setCurrentMonth = {setCurrentMonth}
+        />
       </Grid>
 
       <Grid item xs={12} md={4}>

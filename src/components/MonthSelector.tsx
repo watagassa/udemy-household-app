@@ -9,26 +9,30 @@ import { ja } from "date-fns/locale";
 import { addMonths } from "date-fns";
 //  import { useAppContext } from "../context/AppContext";
 
-const MonthSelector = () => {
-  //   const { currentMonth, setCurrentMonth } = useAppContext();
+interface MonthSelectorProps {
+  currentMonth: Date;
+  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>
+}
+const MonthSelector = ({ currentMonth,setCurrentMonth }: MonthSelectorProps) => {
 
-  //   const handleDateChange = (newDate: Date | null) => {
-  //     if (newDate) {
-  //       setCurrentMonth(newDate);
-  //     }
-  //   };
+    // const handleDateChange = (newDate: Date | null) => {
+    //   if (newDate) {
+    //     setCurrentMonth(newDate);
+    //   }
+    // };
 
-  //   //先月ボタンを押したときの処理
-  //   const handlePreviousMonth = () => {
-  //     const previousMonth = addMonths(currentMonth, -1);
-  //     setCurrentMonth(previousMonth);
-  //   };
+    //先月ボタンを押したときの処理
+    const handlePreviousMonth = () => {
+        //先月の値をDate型のpreviousMonthに格納
+      const previousMonth = addMonths(currentMonth, -1);
+      setCurrentMonth(previousMonth);
+    };
 
-  //   //次月ボタンを押したときの処理
-  //   const handleNextMonth = () => {
-  //     const nextMonth = addMonths(currentMonth, 1);
-  //     setCurrentMonth(nextMonth);
-  //   };
+    //次月ボタンを押したときの処理
+    const handleNextMonth = () => {
+      const nextMonth = addMonths(currentMonth, 1);
+      setCurrentMonth(nextMonth);
+    };
 
   return (
     <LocalizationProvider
@@ -47,7 +51,7 @@ const MonthSelector = () => {
         }}
       >
         <Button
-          //   onClick={handlePreviousMonth}
+           onClick={handlePreviousMonth}
           color={"error"}
           variant="contained"
         >
@@ -55,7 +59,7 @@ const MonthSelector = () => {
         </Button>
         <DatePicker
           //   onChange={handleDateChange}
-          //   value={currentMonth}
+          value={currentMonth}
           label="年月を選択"
           sx={{ mx: 2, background: "white" }}
           //年と月のみ選択できるようにする
@@ -67,12 +71,12 @@ const MonthSelector = () => {
             toolbar: {
               toolbarFormat: "yyyy/MM",
             },
-            // dateFormats={{ monthAndYear: "yyyy年 MM月" }}代わり
+            // dateFormats={{ monthAndYear: "yyyy年 MM月" }}の代わり
             calendarHeader: { format: "yyyy年MM月" },
           }}
         />
         <Button
-          // onClick={handleNextMonth}
+          onClick={handleNextMonth}
           color={"primary"}
           variant="contained"
         >
