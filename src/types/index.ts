@@ -35,14 +35,17 @@ export interface CalendarContent {
   expense: string;
   balance: string;
 }
+
+// プロ演のメモ書き
 //　材料　材料名と分量
 export interface Ingredient {
   name: string;
   amount: string;
 }
+
 //説明文　画像とテキスト
 export interface Description{
-  image: "string";
+  image?: "string";
   text: "string";
 }
 
